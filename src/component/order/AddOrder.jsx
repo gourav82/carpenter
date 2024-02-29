@@ -32,7 +32,8 @@ const AddOrder = () => {
     if (router.query.orderId) {
       setMode("Edit");
       _getOrderById(router.query.orderId).then((res) => {
-        const fullAddress = res.data.address.split(",");
+        const fullAddress = res.data?.address.split(",");
+        console.log({res});
         setWorkerForm((prevState) => {
           return {
             ...prevState,

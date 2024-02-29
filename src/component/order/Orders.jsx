@@ -7,6 +7,7 @@ import { _getOrders } from "../../network/order";
 import NewPassword from "../login/NewPassword";
 import { _getEmployeeBulk } from "@/network/employee";
 import useCheckMobileScreen from "../../../hooks/useCheckMobileScreen";
+import ModalPopup from "./ModalPopup";
 
 const Orders = () => {
   const {isMobile, isIpad } = useCheckMobileScreen();
@@ -15,14 +16,9 @@ const Orders = () => {
   const [pageSize, setPageSize] = useState(3);
   const [totalOrders, setTotalOrders] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [openModel, setOpenModel] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState({})
 
-  // useEffect(() => {
-  //   _getOrders(pageNumber, pageSize).then((res) => {
-  //     setOrders(res.data.orders);
-  //     setTotalOrders(res.data.totalCount);
-  //     setTotalPages(Math.ceil(res.data.totalCount/pageSize));
-  //   });
-  // }, []);
 
   useEffect(() => {
     _getOrders(pageNumber, pageSize).then((res) => {
@@ -59,13 +55,20 @@ const Orders = () => {
         setTotalPages(Math.ceil(res.data.totalCount/pageSize));
       })
     });
-  }, [pageNumber])
+  }, [pageNumber, pageSize])
 
   const handlePageChange = (e, newPage) => {
     console.log({e});
     setPageNumber(newPage);
   }
-  
+
+  const hanldleModel =(order)=>{
+    setSelectedOrder(order);
+    setOpenModel(true);
+  }
+  const onCloseModal = () =>{
+    setOpenModel(false);
+    }
   return (
     <>
       <div className="order container--responsive font--center">
@@ -73,10 +76,10 @@ const Orders = () => {
           <input type="text" placeholder="search..." className="bg--shadow" />
           <BsSearch className="position--absolute search-icon" />
         </div>
-        <div className={`order--card flex ${isMobile || isIpad ? "flex--direction-column": "flex--justify-content-between flex--align-items-center"} mt--50`}>
+        <div className={`order--card flex ${isMobile || isIpad ? "flex--direction-column": "flex--justify-content-between flex--align-items-center"} mt--30`}>
           {orders?.map((order, index) => (
             <>
-              <div className="order--card-list bg--shadow bg--radius pd--15" key={index}>
+              <div className="order--card-list bg--shadow bg--radius pd--15" key={`order-${index}`}>
                 <span className="flex flex--justify-content-between flex--align-items-center">
                   <span className="color--maroon fs--22">
                     {order.customerName}
@@ -108,7 +111,7 @@ const Orders = () => {
                     </span>
                     {order.workers.map((emp, index) => (
                       <>
-                        <span className="flex flex--justify-content-between flex--align-items-center mt--10">
+                        <span className="flex flex--justify-content-between flex--align-items-center mt--10" key={`emp--${index}`}>
                           <span className="font--bold">Worker:-</span>
                           <span>{emp.name}</span>
                         </span>
@@ -132,6 +135,8 @@ const Orders = () => {
                       <span className="font--bold">Status:-</span>
                       <span>{order.status}</span>
                     </span>
+
+                    <button className="bg--maroon bg--radius bg--shadow pt--5 pb--5 pl--10 pr--10 fs--15 width--column-30 color--white mt--10" onClick={hanldleModel(order)}> order Details</button>
                   </div>
                 </div>
               </div>
@@ -154,8 +159,12 @@ const Orders = () => {
           <Link href={`/orders/add`}>Add Order</Link>
         </button>
       </div>
+      <ModalPopup onCloseModal={onCloseModal} openModel={openModel} order={selectedOrder}/>
     </>
   );
 };
 
 export default Orders;
+
+
+

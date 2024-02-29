@@ -1,6 +1,6 @@
 .order{
     input{
-        margin-top: 50px;
+        margin-top: 30px;
         width: 60%;
         padding: 15px;
         border-radius: 20px;
@@ -21,7 +21,7 @@
 
        &-list{
         width: 370px;
-        height: 300px;
+        height: 350px;
         @include max(1024) {
             width: auto;
             margin: 10px auto;
